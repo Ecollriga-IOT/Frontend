@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchUser, updateUserDto } from "../../redux/thunks/userThunks";
-import { Upload } from "antd";
-import { storage } from "../../firebase/config";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { set } from "firebase/database";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUser, updateUserDto } from "../../redux/thunks/userThunks";
 
 export const BodyUserProfile = () => {
   const dispatch = useDispatch();
@@ -17,7 +13,6 @@ export const BodyUserProfile = () => {
   }, [dispatch]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
     userLastName: "",
@@ -25,7 +20,7 @@ export const BodyUserProfile = () => {
     userEmail: "",
     userPhone: "",
     userBirthDate: "",
-    imageData: "",
+    imageData: "", // Puedes eliminar esta línea si no necesitas gestionar imágenes
   });
 
   useEffect(() => {
@@ -50,33 +45,11 @@ export const BodyUserProfile = () => {
     });
   };
 
-  const handleEditClick = async () => {
+  const handleEditClick = () => {
     if (isEditing) {
-      if (formData.imageData instanceof File) {
-        try {
-          setIsUploading(true);
-          const imageRef = ref(storage, `profileImages/${formData.userEmail}`);
-          await uploadBytes(imageRef, formData.imageData);
-          const downloadURL = await getDownloadURL(imageRef);
-          formData.imageData = downloadURL;
-        } catch (error) {
-          console.error("Error uploading image: ", error);
-        }
-      }
       dispatch(updateUserDto(formData));
-      setIsUploading(false);
     }
     setIsEditing(!isEditing);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({
-        ...formData,
-        imageData: file,
-      });
-    }
   };
 
   const handleCancelClick = () => {
@@ -86,7 +59,6 @@ export const BodyUserProfile = () => {
   const handlePay = () => {
     navigate("/dashboard/metodos-de-pago");
   };
-  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user data</div>;
@@ -201,17 +173,7 @@ export const BodyUserProfile = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                   onChange={handleInputChange}
                 />
-                <label className="block text-gray-700 mt-2">
-                  Subir Nueva Imagen
-                </label>
-                <div className="flex items-center">
-                  <input
-                    type="file"
-                    className="mt-1 block w-full"
-                    onChange={handleImageChange}
-                  />
-                  <Upload className="ml-2 text-blue-500 text-2xl cursor-pointer" />
-                </div>
+                {/* Si decides permitir subir imágenes de otra forma, implementa aquí */}
               </>
             )}
           </div>
@@ -219,35 +181,28 @@ export const BodyUserProfile = () => {
       </div>
 
       <div className="mt-6 flex items-center">
-        <button onClick={() => {
-          handlePay();
-        }} className="flex items-center text-red-600 hover:text-red-800">
+        <button onClick={handlePay} className="flex items-center text-red-600 hover:text-red-800">
           <span>Agregar Método de Pago</span>
           <span className="ml-2 text-2xl">+</span>
         </button>
       </div>
 
       <div className="mt-8 flex justify-start space-x-4">
-        {/* <button className="py-2 px-4 border border-red-600 text-red-600 rounded-md hover:bg-red-100">
-          Cancel
-        </button> */}
         <button
           onClick={handleEditClick}
           className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
-          disabled={isUploading} // Deshabilita el botón mientras se está subiendo la imagen
         >
-          {isEditing ? (isUploading ? "Guardando..." : "Guardar") : "Editar"}
+          {isEditing ? "Guardar" : "Editar"}
         </button>
 
-        {isEditing &&
-          !isUploading && ( // Muestra el botón Cancelar solo si está en modo edición y no se está subiendo ninguna imagen
-            <button
-              onClick={handleCancelClick}
-              className="py-2 px-4 border border-red-600 text-red-600 rounded-md hover:bg-red-100"
-            >
-              Cancelar
-            </button>
-          )}
+        {isEditing && (
+          <button
+            onClick={handleCancelClick}
+            className="py-2 px-4 border border-red-600 text-red-600 rounded-md hover:bg-red-100"
+          >
+            Cancelar
+          </button>
+        )}
       </div>
     </div>
   );

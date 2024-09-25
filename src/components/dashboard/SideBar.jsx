@@ -1,12 +1,12 @@
+import { ChevronFirst, ChevronLast, LogOut, Settings } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ChevronLast, ChevronFirst, Settings, LogOut } from "lucide-react";
-import smartSproutLogo from "../../assets/Add/SmartSproutLogo.png";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+//import smartSproutLogo from "../../assets/Add/SmartSproutLogo.png";
 import { setActivateItem } from "../../redux/slices/sidebarSlice";
+import { logOutUser } from "../../redux/thunks/authThunks";
 import { fetchUser } from "../../redux/thunks/userThunks";
 import ConfirmDialog from "../../utils/ConfirmDialog";
-import { logOutUser } from "../../redux/thunks/authThunks";
-import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
 
@@ -45,13 +45,8 @@ export default function SideBar({ children }) {
               navigate("/home");
             }}
           >
-            <img
-              src={smartSproutLogo}
-              alt="logo"
-              className={`overflow-hidden transition-all ${
-                expanded ? "w-20" : "w-0"
-              }`}
-            />
+            
+            
           </button>
           <button
             onClick={() => setExpanded((curr) => !curr)}

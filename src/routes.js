@@ -1,18 +1,17 @@
 import React from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { Home } from './pages/Home'
-import { LoginPage } from './pages/LoginPage'
-import { RegisterPage } from './pages/RegisterPage'
-import PrivateRoute from './utils/privateRoute'
-import { DashboardPage } from './pages/Dashboard'
-import { Subscription } from './pages/Subscription'
-import { Iot } from './pages/Iot'
-import { Analytics } from './pages/Analytics'
-import InicioDashboard from './pages/InicioDashboard'
-import UserProfile from './pages/UserProfile'
-import { Cropfields } from './pages/Cropfields'
-import { PayMethods } from './pages/PayMethods'
+import { Route, Routes } from 'react-router-dom'
 import { AddCropfield } from './pages/AddCropfield'
+import { Analytics } from './pages/Analytics'
+import { Cropfields } from './pages/Cropfields'
+import { DashboardPage } from './pages/Dashboard'
+import { Home } from './pages/Home'
+import InicioDashboard from './pages/InicioDashboard'
+import { Iot } from './pages/Iot'
+import { LoginPage } from './pages/LoginPage'
+import { PayMethods } from './pages/PayMethods'
+import { RegisterPage } from './pages/RegisterPage'
+import { Subscription } from './pages/Subscription'
+import UserProfile from './pages/UserProfile'
 
 
 
@@ -23,7 +22,7 @@ export const RoutesApp = () => {
       <Route path="/home" element={<Home />} />
       <Route path='/login' element={<LoginPage />} />
       <Route path='/signup' element={<RegisterPage />} />
-      <Route exact path='/dashboard' element={<PrivateRoute />}>
+      
         <Route exact path='/dashboard' element={<DashboardPage />}>
           <Route path='inicio' element={<InicioDashboard />} />
           <Route path='cultivos' element={<Cropfields />} />
@@ -36,7 +35,7 @@ export const RoutesApp = () => {
           <Route path='metodos-de-pago' element={<PayMethods/>}/>
           {/* CropfieldForm */}
         </Route>
-      </Route>
+    
     </Routes>
   )
 }
