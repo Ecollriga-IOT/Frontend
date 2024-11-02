@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import CropField from "../../models/CropFieldDto";
+import CropField from "../../pages/models/CropFieldDto";
 import { getCropFieldById, getCropFields, updateCropField } from "../../provider/cropFieldProvider";
 
 

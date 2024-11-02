@@ -1,4 +1,4 @@
-import UserModel from "../models/UserDto";
+import UserModel from "../pages/models/UserDto";
 import axiosInstance from "./axiosConfig";
 
 export const getUser = async () => {

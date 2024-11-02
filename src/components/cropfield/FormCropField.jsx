@@ -1,55 +1,61 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import {
-  GoogleMap,
-  Marker,
-  useLoadScript,
-  Autocomplete,
-} from "@react-google-maps/api";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCropFieldById, updateCropFieldDto } from "../../redux/thunks/cropFieldThunks";
-import { useParams, useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { clearCropFieldState } from "../../redux/slices/updateCropFieldSlice";
+import "leaflet/dist/leaflet.css";
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "400px",
-};
 
-const center = {
-  lat: 40.7128,
-  lng: -74.006,
-};
+import L from "leaflet";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-const options = {
-  disableDefaultUI: true,
-  zoomControl: true,
-};
+const DefaultIcon = L.icon({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
-export const FormCropField = () => {
+const FormCropField = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
+  const navigate = useNavigate();
   const { cropfield, loading, error } = useSelector((state) => state.updateCropField);
 
   const initialState = {
     cropFieldName: "",
     cropFieldDescription: "",
-    latitudeData: "",
-    longitudeData: "",
-    cropFieldSize: "",
+    latitudeData: 0,
+    longitudeData: 0,
+    cropFieldSize: 0,
     soilType: "",
     cropType: "",
     cropVariety: "",
     cropPlant: "",
     cropPlantingDate: "",
-    numPlants: "",
-    minTemperature: "",
-    maxTemperature: "",
-    minHumidity: "",
-    maxHumidity: "",
+    numPlants: 0,
+    idealTemperature: 0,
+    idealHumidity: 0,
+    irrigationDuration: 0,
+    irrigationStartTime: {
+      hour: 0,
+      minute: 0,
+      second: 0,
+      nano: 0,
+    },
+    irrigationEndTime: {
+      hour: 0,
+      minute: 0,
+      second: 0,
+      nano: 0,
+    },
+    irrigationCompleted: true,
+    irrigation: true,
   };
-  
+
   const [cropField, setCropField] = useState(initialState);
+  const [position, setPosition] = useState([40.7128, -74.006]); // Coordenadas iniciales (Nueva York)
 
   useEffect(() => {
     if (id) {
@@ -63,22 +69,12 @@ export const FormCropField = () => {
   useEffect(() => {
     if (cropfield) {
       setCropField({
-        cropFieldName: cropfield.cropFieldName || "",
-        cropFieldDescription: cropfield.cropFieldDescription || "",
-        latitudeData: cropfield.latitudeData || "",
-        longitudeData: cropfield.longitudeData || "",
-        cropFieldSize: cropfield.cropFieldSize || "",
-        soilType: cropfield.soilType || "",
-        cropType: cropfield.cropType || "",
-        cropVariety: cropfield.cropVariety || "",
-        cropPlant: cropfield.cropPlant || "",
-        cropPlantingDate: cropfield.cropPlantingDate || "",
-        numPlants: cropfield.numPlants || "",
-        minTemperature: cropfield.minTemperature || "",
-        maxTemperature: cropfield.maxTemperature || "",
-        minHumidity: cropfield.minHumidity || "",
-        maxHumidity: cropfield.maxHumidity || "",
+        ...initialState,
+        ...cropfield,
+        latitudeData: cropfield.latitudeData || 0,
+        longitudeData: cropfield.longitudeData || 0,
       });
+      setPosition([cropfield.latitudeData || 0, cropfield.longitudeData || 0]);
     }
   }, [cropfield]);
 
@@ -88,55 +84,21 @@ export const FormCropField = () => {
     };
   }, [dispatch]);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCc6B5eTCAvXyLm8Jr8iFGUHyafcWXFvdg", // Reemplaza con tu clave de API
-    libraries: ["places"],
-  });
-
-  const [selected, setSelected] = useState(null);
-  const [mapCenter, setMapCenter] = useState(center);
-  const autocompleteRef = useRef(null);
-  const mapRef = useRef(null);
-
-  const onMapClick = useCallback((event) => {
-    setSelected({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
+  const handleMapClick = (e) => {
+    setPosition([e.latlng.lat, e.latlng.lng]);
     setCropField((prev) => ({
       ...prev,
-      latitudeData: event.latLng.lat(),
-      longitudeData: event.latLng.lng(),
+      latitudeData: e.latlng.lat,
+      longitudeData: e.latlng.lng,
     }));
-  }, []);
-
-  const onLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
-
-  const onPlaceChanged = () => {
-    if (autocompleteRef.current !== null && autocompleteRef.current.getPlace) {
-      const place = autocompleteRef.current.getPlace();
-      if (place.geometry) {
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        setSelected({ lat, lng });
-        setCropField((prev) => ({
-          ...prev,
-          latitudeData: lat,
-          longitudeData: lng,
-        }));
-        setMapCenter({ lat, lng }); // Actualizamos el centro del mapa
-        if (mapRef.current) {
-          mapRef.current.panTo({ lat, lng });
-          mapRef.current.setZoom(14); // Puedes ajustar el zoom según sea necesario
-        }
-      }
-    }
   };
 
-  if (loadError) return "Error loading maps";
-  if (!isLoaded) return "Loading Maps";
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: handleMapClick,
+    });
+    return null;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -150,16 +112,13 @@ export const FormCropField = () => {
     e.preventDefault();
     console.log("CropField data submitted: ", cropField);
     dispatch(updateCropFieldDto(cropField)).then(() => {
-      navigate("/dashboard/cultivos"); // Usa navigate en lugar de history.push
+      navigate("/dashboard/cultivos");
     });
   };
 
-
   return (
     <div>
-      <h1 className="text-[22px] font-bold mb-4 text-center">
-        Agregar nuevo cultivo
-      </h1>
+      <h1 className="text-[22px] font-bold mb-4 text-center">Agregar nuevo cultivo</h1>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-auto w-[60%]">
           <div className="mb-4">
@@ -174,9 +133,7 @@ export const FormCropField = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">
-              Descripción del Cultivo
-            </label>
+            <label className="block text-gray-700">Descripción del Cultivo</label>
             <input
               type="text"
               name="cropFieldDescription"
@@ -252,32 +209,15 @@ export const FormCropField = () => {
             />
           </div>
 
+          {/* Map Section */}
           <div className="mb-4">
             <label className="block text-gray-700">Ubicación del Cultivo</label>
-            <Autocomplete
-              onLoad={(autocomplete) => {
-                autocompleteRef.current = autocomplete;
-              }}
-              onPlaceChanged={onPlaceChanged}
-            >
-              <input
-                type="text"
-                placeholder="Busca un lugar"
-                style={{ width: "90%", height: "40px", marginBottom: "10px" }}
-              />
-            </Autocomplete>
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              zoom={8}
-              center={mapCenter} // Usamos el estado del centro del mapa
-              options={options}
-              onClick={onMapClick}
-              onLoad={onLoad}
-            >
-              {selected && (
-                <Marker position={{ lat: selected.lat, lng: selected.lng }} />
-              )}
-            </GoogleMap>
+            <MapContainer center={position} zoom={13} style={{ height: "400px", width: "100%" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <Marker position={position}>
+                <MapClickHandler />
+              </Marker>
+            </MapContainer>
           </div>
 
           <div className="mb-4">
@@ -291,49 +231,24 @@ export const FormCropField = () => {
             />
           </div>
 
+          {/* Campos de Temperatura Ideal y Humedad Ideal */}
           <div className="mb-4">
-            <label className="block text-gray-700">
-              Temperatura Mínima (°C)
-            </label>
+            <label className="block text-gray-700">Temperatura Ideal (°C)</label>
             <input
               type="number"
-              name="minTemperature"
-              value={cropField.minTemperature}
+              name="idealTemperature"
+              value={cropField.idealTemperature}
               onChange={handleChange}
               className="mt-1 p-2 border rounded w-full"
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">
-              Temperatura Máxima (°C)
-            </label>
+            <label className="block text-gray-700">Humedad Ideal (%)</label>
             <input
               type="number"
-              name="maxTemperature"
-              value={cropField.maxTemperature}
-              onChange={handleChange}
-              className="mt-1 p-2 border rounded w-full"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">Humedad Mínima (%)</label>
-            <input
-              type="number"
-              name="minHumidity"
-              value={cropField.minHumidity}
-              onChange={handleChange}
-              className="mt-1 p-2 border rounded w-full"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">Humedad Máxima (%)</label>
-            <input
-              type="number"
-              name="maxHumidity"
-              value={cropField.maxHumidity}
+              name="idealHumidity"
+              value={cropField.idealHumidity}
               onChange={handleChange}
               className="mt-1 p-2 border rounded w-full"
             />
@@ -342,7 +257,6 @@ export const FormCropField = () => {
 
         <div className="flex justify-center">
           <button
-          onClick={handleSubmit}
             type="submit"
             className="bg-orange-500 text-white px-4 py-2 rounded shadow-md hover:bg-orange-600 focus:outline-none"
           >
@@ -353,3 +267,5 @@ export const FormCropField = () => {
     </div>
   );
 };
+
+export { FormCropField };

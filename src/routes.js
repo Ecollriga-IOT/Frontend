@@ -4,7 +4,6 @@ import { AddCropfield } from './pages/AddCropfield'
 import { Analytics } from './pages/Analytics'
 import { Cropfields } from './pages/Cropfields'
 import { DashboardPage } from './pages/Dashboard'
-import { Home } from './pages/Home'
 import InicioDashboard from './pages/InicioDashboard'
 import { Iot } from './pages/Iot'
 import { LoginPage } from './pages/LoginPage'
@@ -18,8 +17,7 @@ import UserProfile from './pages/UserProfile'
 export const RoutesApp = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path='/login' element={<LoginPage />} />
       <Route path='/signup' element={<RegisterPage />} />
       

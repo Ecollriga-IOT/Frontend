@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUser, updateUser } from "../../provider/userProvider";
-import UserModel from "../../models/UserDto";
+import UserModel from "../../pages/models/UserDto";
 
 
 export const fetchUser = createAsyncThunk(
