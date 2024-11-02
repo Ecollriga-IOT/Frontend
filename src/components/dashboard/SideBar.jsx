@@ -25,7 +25,7 @@ export default function SideBar({ children }) {
   const handleLogout = () => {
     dispatch(logOutUser());
     setShowDialog(false);
-    navigate("/home");
+    navigate("/");
   };
 
   const userName = user ? user.userName : "User";
