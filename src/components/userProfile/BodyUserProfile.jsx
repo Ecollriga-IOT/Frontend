@@ -20,7 +20,7 @@ export const BodyUserProfile = () => {
     userEmail: "",
     userPhone: "",
     userBirthDate: "",
-    imageData: "", // Puedes eliminar esta línea si no necesitas gestionar imágenes
+    imageData: "", 
   });
 
   useEffect(() => {
@@ -190,7 +190,11 @@ export const BodyUserProfile = () => {
       <div className="mt-8 flex justify-start space-x-4">
         <button
           onClick={handleEditClick}
-          className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
+          className={`py-2 px-4 ${
+            isEditing
+              ? "bg-[#062dd9] hover:bg-[#077eff]"
+              : "bg-[#062dd9] hover:bg-[#608be1]"
+          } text-white rounded-md`}
         >
           {isEditing ? "Guardar" : "Editar"}
         </button>

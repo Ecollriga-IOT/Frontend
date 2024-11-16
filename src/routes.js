@@ -25,7 +25,7 @@ export const RoutesApp = () => {
           <Route path='inicio' element={<InicioDashboard />} />
           <Route path='cultivos' element={<Cropfields />} />
           <Route path='cultivos/add-cultivo' element={<AddCropfield />} />
-          <Route path="/dashboard/cultivos/edit-cultivo/:id" element={<AddCropfield />} />
+          <Route path="cultivos/edit-cultivo/:id" element={<AddCropfield />} />
           <Route path='subscripcion' element={<Subscription />} />
           <Route path='iot' element={<Iot />} />
           <Route path='metricas' element={<Analytics />} />

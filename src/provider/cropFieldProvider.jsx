@@ -16,10 +16,24 @@ export const getCropFieldById = async (cropFieldId) => {
 }
 
 export const updateCropField = async (cropField) => {
+  const cropFieldId = cropField.cropFieldId;
+  if (!cropFieldId ) {
+      throw new Error("User ID not found. Please log in.");
+  }
+  const response = await axiosInstance.put(`/cropfield/${cropFieldId}`, cropField);
+  return CropField.fromJson(response.data);
+}
+
+export const createCropField = async (cropField) => {
   const userId = localStorage.getItem("user_id");
   if (!userId) {
       throw new Error("User ID not found. Please log in.");
   }
   const response = await axiosInstance.post(`/cropfield/user/${userId}`, cropField);
   return CropField.fromJson(response.data);
-}
+};
+
+export const deleteCropField = async (cropFieldId) => {
+  const response = await axiosInstance.delete(`/cropfield/${cropFieldId}`);
+  return response.data;
+};
