@@ -2,7 +2,6 @@ import { ChevronFirst, ChevronLast, LogOut, Settings } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-//import smartSproutLogo from "../../assets/Add/SmartSproutLogo.png";
 import { setActivateItem } from "../../redux/slices/sidebarSlice";
 import { logOutUser } from "../../redux/thunks/authThunks";
 import { fetchUser } from "../../redux/thunks/userThunks";

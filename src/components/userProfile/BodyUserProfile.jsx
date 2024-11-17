@@ -182,7 +182,7 @@ export const BodyUserProfile = () => {
 
       <div className="mt-6 flex items-center">
         <button onClick={handlePay} className="flex items-center text-red-600 hover:text-red-800">
-          <span>Agregar Método de Pago</span>
+          <span>Métodos de Pago</span>
           <span className="ml-2 text-2xl">+</span>
         </button>
       </div>

@@ -20,7 +20,7 @@ export const DashboardPage = () => {
         />
         <SideBarItem
           icon={<PiCurrencyCircleDollar size={28} />}
-          text="Planes de Subscripción"
+          text="Plan de Subscripción"
           id="subscripcion"
         />
         <SideBarItem
