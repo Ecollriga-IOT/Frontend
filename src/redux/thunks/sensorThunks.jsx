@@ -1,6 +1,5 @@
-// sensorThunks.js
-import { setSensorData, toggleSensor, setLoading, setError } from 'src/redux/slices/sensorSlices';
-import api from '../../utils/api'; // Asegúrate de tener tu instancia de Axios configurada
+import { setSensorData, toggleSensor, setLoading, setError } from '../slices/sensorSlices';
+import api from '../../utils/api'; 
 
 export const fetchSensorData = () => async (dispatch) => {
     dispatch(setLoading(true));

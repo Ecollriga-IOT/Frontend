@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSensorData, openSensor, closeSensor } from 'src/redux/thunks/sensorThunks';
+import { fetchSensorData, openSensor, closeSensor } from '../../redux/thunks//sensorThunks';
 
 const HeaderIot = () => {
     const dispatch = useDispatch();
