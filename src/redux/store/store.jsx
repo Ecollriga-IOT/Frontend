@@ -6,14 +6,14 @@ import userSlice from "../slices/userSlice";
 import cropFieldSlice from "../slices/cropFieldSlice";
 import updateCropFieldSlice from "../slices/updateCropFieldSlice";
 import cardSlice from "../slices/cardSlice";
-import sensorReducer from '../slices/sensorSlices';
+
 
 const store = configureStore({
     reducer: {
         login: loginSlice,
         register: registerSlice,
         sidebar: sidebarReducer,
-        sensor: sensorReducer,
+
         user: userSlice,
         cropfield: cropFieldSlice,
         updateCropField: updateCropFieldSlice,
