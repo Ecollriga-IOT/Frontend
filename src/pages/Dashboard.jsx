@@ -28,11 +28,6 @@ export const DashboardPage = () => {
           text="IoT"
           id="iot"
         />
-        <SideBarItem
-          icon={<TbDeviceAnalytics size={28} />}
-          text="Métricas"
-          id="metricas"
-        />
       </Sidebar>
       <div className="flex-grow p-[24px] overflow-y-auto">
         <Outlet />

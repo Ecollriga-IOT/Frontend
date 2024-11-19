@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSensorData, openSensor, closeSensor } from 'src/redux/slices/sensorSlices';
-import styles from '/HeaderIoT.module.css';
+import { fetchSensorData, openSensor, closeSensor } from '../../redux/slices/sensorSlices';
+import styles from './HeaderIoT.module.css';
 
 const HeaderIoT = () => {
     const dispatch = useDispatch();
