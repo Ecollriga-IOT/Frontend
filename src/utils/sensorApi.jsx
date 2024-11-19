@@ -1,13 +1,16 @@
-import api from './api'; // Axios configurado
+import api from "src/utils/api"; // Axios configurado
+
+// Definir la URL base de la API
+const BASE_URL = 'https://backend-1-lkvf.onrender.com/api'; // Ajusta la URL base si es necesario
 
 // Manejar la apertura del dispositivo
 export async function openSensor() {
     try {
-        const response = await api.post('https://backend-1-lkvf.onrender.com/swagger-ui/index.html#/mqtt-controller/openDevice');
+        const response = await api.post(`${BASE_URL}/mqtt-controller/openDevice`);
         if (response.status === 200) {
             return response.data; // Éxito
         }
-         new Error(response.data.message || 'Error al abrir el sensor');
+        throw new Error(response.data.message || 'Error al abrir el sensor');
     } catch (error) {
         return handleApiError(error); // Manejo del error
     }
@@ -16,11 +19,11 @@ export async function openSensor() {
 // Manejar el cierre del dispositivo
 export async function closeSensor() {
     try {
-        const response = await api.post('https://backend-1-lkvf.onrender.com/swagger-ui/index.html#/mqtt-controller/closeDevice');
+        const response = await api.post(`${BASE_URL}/mqtt-controller/closeDevice`);
         if (response.status === 200) {
             return response.data; // Éxito
         }
-        new Error(response.data.message || 'Error al cerrar el sensor');
+        throw new Error(response.data.message || 'Error al cerrar el sensor');
     } catch (error) {
         return handleApiError(error); // Manejo del error
     }
@@ -29,11 +32,11 @@ export async function closeSensor() {
 // Obtener datos del sensor
 export async function fetchSensorData() {
     try {
-        const response = await api.get('https://backend-1-lkvf.onrender.com/swagger-ui/index.html#/mqtt-controller/sensorDevice');
+        const response = await api.get(`${BASE_URL}/mqtt-controller/sensorDevice`);
         if (response.status === 200) {
             return response.data; // Devuelve los datos de humedad y temperatura
         }
-       new Error(response.data.message || 'Error al obtener los datos del sensor');
+        throw new Error(response.data.message || 'Error al obtener los datos del sensor');
     } catch (error) {
         return handleApiError(error); // Manejo del error
     }
@@ -41,6 +44,8 @@ export async function fetchSensorData() {
 
 // Función para manejar errores de API
 function handleApiError(error) {
+    console.error("Error en la API:", error); // Agrega un log detallado
+
     if (error.response) {
         // Errores enviados por el backend (404, 500, etc.)
         return {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeaderIoT } from '../components/iot/HeaderIoT';
+import { HeaderIoT } from '/src/components/iot/HeaderIoT';
 
 export const Iot = () => {
     return (
