@@ -8,6 +8,7 @@ import updateCropFieldSlice from "../slices/updateCropFieldSlice";
 import cardSlice from "../slices/cardSlice";
 import sensorReducer from '../slices/sensorSlices';
 
+
 const store = configureStore({
     reducer: {
         login: loginSlice,

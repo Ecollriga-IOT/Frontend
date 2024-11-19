@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSensorData, openSensor, closeSensor } from '../../redux/thunks//sensorThunks';
+import { fetchSensorData, openSensor, closeSensor } from 'src/redux/slices/sensorSlices';
+import styles from '/HeaderIoT.module.css';
 
-const HeaderIot = () => {
+const HeaderIoT = () => {
     const dispatch = useDispatch();
     const { humidity, temperature, isSensorOpen, loading, error } = useSelector((state) => state.sensor);
 
@@ -13,7 +14,7 @@ const HeaderIot = () => {
     }, [dispatch]);
 
     return (
-        <header>
+        <header className={styles.header}>
             <h1>IoT Dashboard</h1>
             {loading ? (
                 <p>Cargando...</p>
@@ -26,10 +27,10 @@ const HeaderIot = () => {
                 </div>
             )}
             <div>
-                <button onClick={() => dispatch(openSensor())} disabled={isSensorOpen}>
+                <button className={styles.button} onClick={() => dispatch(openSensor())} disabled={isSensorOpen}>
                     Abrir Sensor
                 </button>
-                <button onClick={() => dispatch(closeSensor())} disabled={!isSensorOpen}>
+                <button className={styles.button} onClick={() => dispatch(closeSensor())} disabled={!isSensorOpen}>
                     Cerrar Sensor
                 </button>
             </div>
@@ -37,4 +38,4 @@ const HeaderIot = () => {
     );
 };
 
-export default HeaderIot;
+export default HeaderIoT;
